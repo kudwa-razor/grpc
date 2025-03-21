@@ -1,0 +1,78 @@
+-Grpc can use protocol buffers as both its interface definition language and as its underlying message interchange format.
+
+- Grpc is mainly for microservices. - like http it uses protocol buffers.
+
+Protocol buffers: These are google's open source mechanism for serializing structured data.
+
+Steps for protocol buffers:
+    -Define the structure for the data you want to serialize in a proto file - ordinary file with a .proto extension
+    -Protocol buffered data is in form of message, where each message has info in the form of name-value pairs called 'fields'.
+    - USe protocol buffer compiler - 'protoc' to generate data access -> imagine ur language is C++, running the compiler on the 
+        example below will generate a class called 'Person' which can be used in your application.
+    Ex: 
+    message Person {
+        string name = 1;
+        int32 id = 2;
+        bool has_ponycopter = 3;
+    }
+    -So you can build services using protocol buffers which can include methods/messages that are defined somewhere else.
+
+
+gRPC uses protoc with a special gRPC plugin to generate code from your proto file: you get generated gRPC client and server code, 
+ as well as the regular protocol buffer code.
+
+All the complexity of communication between different languages and environments is handled for ypu by your grpc.
+
+
+The link for that grpc shit:  " https://grpc.io/docs/languages/go/basics/ "
+
+Grpc lets you define 4 kinds of service methods:
+
+ 1)A simple RPC where the client sends a request to the server using the stub and waits for a response to come back, just like a normal function call.
+   Ex: 
+    // Obtains the feature at a given position.
+    rpc GetFeature(Point) returns (Feature) {}
+
+
+ 2)A server-side streaming RPC where the client sends a request to the server and gets a stream to read a sequence of messages back.
+   you specify a server-side streaming method by placing the 'stream' keyword before the response type.
+   Ex:
+   // Obtains the Features available within the given Rectangle.  Results are
+    // streamed rather than returned at once (e.g. in a response message with a
+    // repeated field), as the rectangle may cover a large area and contain a
+    // huge number of features.
+    rpc ListFeatures(Rectangle) returns (stream Feature) {}
+
+ 3)A client-side streaming RPC where the client writes a sequence of messages and sends them to the server, again using a provided stream.
+    Once client has sent a message, it waits for the server to read them all and return its response.
+    you specify a client-side streaming method by placing the stream keyword before the request type.
+
+    Ex:
+    // Accepts a stream of Points on a route being traversed, returning a
+    // RouteSummary when traversal is completed.
+    rpc RecordRoute(stream Point) returns (RouteSummary) {} 
+
+4)A bidirectional streaming RPC where both sides send a sequence of messages using a read-write stream .
+  The two streams operate independently, so clients and servers can read and write in whatever order they like.
+  Order of messagees in each stream is preserved.
+  You specify this type of method by placing the stream keyword before both the request and the response.
+  Ex:
+  // Accepts a stream of RouteNotes sent while a route is being traversed,
+  // while receiving other RouteNotes (e.g. from other users).
+  rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
+
+
+
+Generating client and server code:
+
+GPT THE CODES FOR BELOW AND ASK THE DIFFERNCE FOR EACH
+Simple RPC 
+Server-side streaming RPC -> ListFeatures()
+Client side streaming RPC  -> RecordRoute()
+Bidirectional streaming RPC -> RouteChat()
+
+
+Starting the server:
+From this part it is in GPT , here's the link : "https://chatgpt.com/share/67d169e1-b5b4-800d-8d94-d871b30cddfb"
+
+Advantages of Grpc over http:
